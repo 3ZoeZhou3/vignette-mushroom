@@ -24,7 +24,7 @@ Here we have a introductory video for you to better know what is Random Forest.
 
 [Introductory Video](https://www.youtube.com/watch?v=v6VJ2RO66Ag)
 
-## Example Data -- Mushroom Data to Implement
+## Example Data -- Hotel Reservation Data to Implement
 
 ### Data Description
 
@@ -76,25 +76,30 @@ This dataset is obtained from kaggle. There are 19 predictors in this data set. 
 
 ```{r results='hide', message=FALSE}
 # loading packages
-library(tidymodels)
 library(tidyverse)
-library(randomForest)
 library(dplyr)
-library(caret)
-library(janitor)
-library(ranger)
-tidymodels_prefer()
+library(tidymodels)
+library(janitor) ## clean_names()
+library(ranger) ## random forest model engine
 
 
 # loading the data
-mushrooms <- read.csv('data/mushrooms.csv')
+# loading the data
+hotel <- read.csv("/data/HotelReservations.csv")
 ```
 
 ### Preprocess the data
 
 ```{r}
-# turn a categorical variable into factors
-mushrooms$class <- as.factor(mushrooms$class)
+# cleaning predictor names
+hotel <- clean_names(hotel)
+
+# summarize data
+summary(hotel) # Categorical variables are stored in "character" variables
+
+# Convert characters to factors and rename factor levels
+hotel<- data.frame(lapply(hotel, factor))
+summary(hotel)
 ```
 
 ::: {.callout-note style="background-color: #ffebee; color: black; border-left: 3px solid red;"}
@@ -106,11 +111,12 @@ Turn other categorical variables into factors.
 ## Data Partition
 
 ```{r}
-set.seed(10000)
-# Splitting the data (70/30 split, stratify on capture rate)
-mushrooms_split <- initial_split(mushrooms, prop = 0.7, strata = class)
-mushrooms_train <- training(mushrooms_split)
-mushrooms_test <- testing(mushrooms_split)
+set.seed(1234)
+# Splitting the data (70/30 split)
+hotel_split <- initial_split(hotel, prop = 0.7, strata = booking_status)
+hotel_train <- training(hotel_split)
+hotel_test <- testing(hotel_split)
+
 ```
 
 ::: {.callout-note style="background-color: #ffebee; color: black; border-left: 3px solid red;"}
