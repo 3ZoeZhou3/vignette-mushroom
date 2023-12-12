@@ -213,7 +213,6 @@ hotel_results_rf_tune <- tune_grid(
   grid = rf_grid)
 
 show_best(hotel_results_rf_tune, metric = "roc_auc")
-
 ```
 ```         
 /* Description
